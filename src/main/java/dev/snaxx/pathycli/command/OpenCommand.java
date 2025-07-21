@@ -4,10 +4,13 @@ import dev.snaxx.pathycli.json.PersistenceReader;
 import dev.snaxx.pathycli.model.AliasMapping;
 import dev.snaxx.pathycli.service.ExitCode;
 import dev.snaxx.pathycli.service.OpenService;
+import dev.snaxx.pathycli.util.PathyUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Option;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -40,20 +43,50 @@ public final class OpenCommand implements Callable<Integer> {
         return openWithBypass();
     }
 
+    /**
+     * Attempts to open the requested file without bypassing the default app to be used.
+     * @return An {@link ExitCode} for operation success/failure.
+     */
     private int openNormally() {
         PersistenceReader persistenceReader = new PersistenceReader();
         OpenService openService = new OpenService();
         Optional<AliasMapping> potentialAlias = persistenceReader.getAliasByKey(this.request);
 
         // see if we were given a file path instead of an alias
-        // todo: handle when a path is given instead of an alias
         if (potentialAlias.isEmpty()) {
-            return ExitCode.UNKNOWN.code();
+            return openNormallyFromPath(this.request);
         }
 
         // look for valid alias
         AliasMapping alias = potentialAlias.get();
-        return openService.openFromAlias(alias);
+
+        switch (alias.getFileType()) {
+            case ".exe":
+                return openService.openExecutableFromAlias(alias);
+            default:
+                return ExitCode.UNKNOWN.code();
+        }
+    }
+
+    /**
+     * Attempts to see if instead of an alias, an absolute file path was given.
+     * If one was, an attempt will be made to open the file.
+     * @param path The potential file path provided.
+     * @return An {@link ExitCode} for operation success/failure.
+     */
+    private int openNormallyFromPath(String path) {
+        // either the paths is wrong or it wasn't a path
+        if (!Files.exists(Paths.get(path))) {
+            return ExitCode.INVALID_ARGUMENT.code();
+        }
+
+        OpenService openService = new OpenService();
+        switch (PathyUtils.getFileExtension(path)) {
+            case ".exe":
+                return openService.openExecutableFromAbsolutePath(path);
+            default:
+                return ExitCode.INVALID_ARGUMENT.code();
+        }
     }
 
     private int openWithBypass() {
