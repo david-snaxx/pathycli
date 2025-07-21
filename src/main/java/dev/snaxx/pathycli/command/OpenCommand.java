@@ -20,6 +20,6 @@ public final class OpenCommand implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         OpenService openService = new OpenService();
-        return openService.openExecutableFromAbsolutePath(this.request);
+        return openService.openExecutable(this.request);
     }
 }
