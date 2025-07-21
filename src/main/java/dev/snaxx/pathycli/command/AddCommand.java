@@ -6,6 +6,8 @@ import dev.snaxx.pathycli.util.PathyUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 @Command(name = "add",
@@ -27,7 +29,23 @@ public final class AddCommand implements Callable<Integer> {
     public Integer call() throws Exception {
         AddService addService = new AddService();
         AliasMapping toAdd =
-                new AliasMapping(this.alias, this.filePath, PathyUtils.getFileExtension(this.filePath));
+                new AliasMapping(this.alias,
+                        removeWindowsDriveLetter(this.filePath),
+                        PathyUtils.getFileExtension(this.filePath));
         return addService.addNewAliasMapping(toAdd);
+    }
+
+    public String removeWindowsDriveLetter(String absolutePath) {
+        Path path = Paths.get(absolutePath);
+
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            String pathStr = path.toString();
+            // Match something like "C:\" at the beginning
+            if (pathStr.matches("^[a-zA-Z]:\\\\.*")) {
+                return pathStr.substring(2); // Remove "C:"
+            }
+        }
+        // If not Windows or no drive letter, return as-is
+        return path.toString();
     }
 }
