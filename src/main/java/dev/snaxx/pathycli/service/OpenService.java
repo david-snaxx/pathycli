@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class OpeningService {
+public class OpenService {
 
-    public OpeningService() {}
+    public OpenService() {}
 
     public int openExecutableFromAbsolutePath(String request) {
         if (!request.toLowerCase().endsWith(".exe")) {

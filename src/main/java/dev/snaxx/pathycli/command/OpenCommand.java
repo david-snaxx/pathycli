@@ -1,6 +1,6 @@
 package dev.snaxx.pathycli.command;
 
-import dev.snaxx.pathycli.service.OpeningService;
+import dev.snaxx.pathycli.service.OpenService;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
@@ -19,7 +19,7 @@ public final class OpenCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        OpeningService openingService = new OpeningService();
-        return openingService.openExecutableFromAbsolutePath(this.request);
+        OpenService openService = new OpenService();
+        return openService.openExecutableFromAbsolutePath(this.request);
     }
 }
