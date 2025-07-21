@@ -50,6 +50,20 @@ public class PathyUtils {
     public static boolean isWindows() {
         return System.getProperty("os.name").toLowerCase().startsWith("windows");
     }
+
+    public static String removeWindowsDriveLetter(String absolutePath) {
+        Path path = Paths.get(absolutePath);
+
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            String pathStr = path.toString();
+            // Match something like "C:\" at the beginning
+            if (pathStr.matches("^[a-zA-Z]:\\\\.*")) {
+                return pathStr.substring(2); // Remove "C:"
+            }
+        }
+        // If not Windows or no drive letter, return as-is
+        return path.toString();
+    }
 }
 
 

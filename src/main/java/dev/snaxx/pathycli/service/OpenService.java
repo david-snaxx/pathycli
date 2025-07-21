@@ -1,30 +1,32 @@
 package dev.snaxx.pathycli.service;
 
-import dev.snaxx.pathycli.json.PersistenceReader;
 import dev.snaxx.pathycli.model.AliasMapping;
 import dev.snaxx.pathycli.util.PathyUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 public class OpenService {
 
     public OpenService() {}
 
-    public int openExecutable(String request) {
-        PersistenceReader persistenceReader = new PersistenceReader();
-        Optional<AliasMapping> potentialAlias = persistenceReader.getAliasByKey(request);
-
-        // see if we were given a file path instead of an alias
-        if (potentialAlias.isEmpty()) {
-            return openExecutableFromAbsolutePath(request);
+    /**
+     * Attempts to open the file that the provided {@link AliasMapping} points towards.
+     * @param alias The alias mapping matching the request.
+     * @return An {@link ExitCode} for operation success/failure.
+     */
+    public int openFromAlias(AliasMapping alias) {
+        // route the file based on its extension
+        switch (alias.getFileType()) {
+            case ".exe":
+                openExecutableFromAlias(alias);
+                break;
+            default:
+                return ExitCode.FILE_NOT_FOUND.code();
         }
 
-        // look for valid alias
-        AliasMapping alias = potentialAlias.get();
-        return openExecutableFromAliasMapping(alias);
+        return ExitCode.SUCCESS.code();
     }
 
     /**
@@ -32,7 +34,7 @@ public class OpenService {
      * @param alias The alias mapping object containing the relative file path.
      * @return An {@link ExitCode} for operation success/failure.
      */
-    public int openExecutableFromAliasMapping(AliasMapping alias) {
+    public int openExecutableFromAlias(AliasMapping alias) {
         // validate this is an executable
         if (!alias.getFileType().equals(".exe")) {
             return ExitCode.INVALID_ARGUMENT.code();
@@ -51,7 +53,7 @@ public class OpenService {
 
     /**
      * Launches the executable file provided at the given absolute file path.
-     * Use {@link #openExecutableFromAliasMapping(AliasMapping)} if only a relative path is known.
+     * Use {@link #openExecutableFromAlias(AliasMapping)} if only a relative path is known.
      * @param request The absolute file path leading to the executable.
      * @return An {@link ExitCode} for operation success/failure.
      */

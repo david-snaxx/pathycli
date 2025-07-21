@@ -6,6 +6,7 @@ public enum ExitCode {
     FILE_NOT_FOUND(2, "The given file path is invalid."),
     INVALID_ARGUMENT(3, "The given argument is invalid."),
     ALIAS_ALREADY_EXISTS(4, "The given alias already exists."),
+    MISSING_PARAMETER(5, "A necessary parameter/argument is missing."),
     UNKNOWN(99, "Unknown error has occurred.");
 
     private final int code;
