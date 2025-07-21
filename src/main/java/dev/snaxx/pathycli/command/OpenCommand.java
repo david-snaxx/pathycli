@@ -22,6 +22,4 @@ public final class OpenCommand implements Callable<Integer> {
         OpeningService openingService = new OpeningService();
         return openingService.openExecutableFromAbsolutePath(this.request);
     }
-
-
 }

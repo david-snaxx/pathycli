@@ -19,10 +19,7 @@ public class OpeningService {
 
         ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", request);
         try {
-            pb.redirectOutput(ProcessBuilder.Redirect.DISCARD)
-                    .redirectError(ProcessBuilder.Redirect.DISCARD)
-                    .inheritIO()
-                    .start();
+            pb.inheritIO().start();
         } catch (IOException ioException) {
             return ExitCode.FILE_NOT_FOUND.code();
         }
