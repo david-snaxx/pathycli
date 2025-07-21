@@ -1,5 +1,7 @@
 package dev.snaxx.pathycli;
 
+import dev.snaxx.pathycli.command.OpenCommand;
+import dev.snaxx.pathycli.service.ExitCode;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -12,12 +14,14 @@ public class Pathy implements Callable<Integer> {
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new Pathy())
+                .addSubcommand(new OpenCommand())
                 .execute(args);
+        System.out.println(exitCode);
         System.exit(exitCode);
     }
 
     @Override
     public Integer call() throws Exception {
-        return 0;
+        return ExitCode.SUCCESS.code();
     }
 }
