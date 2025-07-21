@@ -63,6 +63,8 @@ public final class OpenCommand implements Callable<Integer> {
         switch (alias.getFileType()) {
             case ".exe":
                 return openService.openExecutableFromAlias(alias);
+            case ".png", ".jpg":
+                return openService.openImageFromAlias(alias);
             default:
                 return ExitCode.UNKNOWN.code();
         }
@@ -84,6 +86,8 @@ public final class OpenCommand implements Callable<Integer> {
         switch (PathyUtils.getFileExtension(path)) {
             case ".exe":
                 return openService.openExecutableFromAbsolutePath(path);
+            case ".png", ".jpg":
+                return openService.openImageFromAbsolutePath(path);
             default:
                 return ExitCode.INVALID_ARGUMENT.code();
         }

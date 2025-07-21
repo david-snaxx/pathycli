@@ -1,10 +1,13 @@
 package dev.snaxx.pathycli.service;
 
+import dev.snaxx.pathycli.json.PersistenceReader;
 import dev.snaxx.pathycli.model.AliasMapping;
 import dev.snaxx.pathycli.util.PathyUtils;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class OpenService {
@@ -76,5 +79,57 @@ public class OpenService {
         }
 
         return ExitCode.SUCCESS.code();
+    }
+
+    public int openImageFromAlias(AliasMapping alias) {
+        Path filePath = PathyUtils.resolvePlatformPath(alias);
+        if (!Files.exists(filePath)) {
+            return ExitCode.FILE_NOT_FOUND.code();
+        }
+
+        if (!Desktop.isDesktopSupported()) {
+            return ExitCode.OS_NOT_SUPPORTED.code();
+        }
+
+        Desktop desktop = Desktop.getDesktop();
+
+        if (!desktop.isSupported(Desktop.Action.OPEN)) {
+            return ExitCode.OS_NOT_SUPPORTED.code();
+        }
+
+        try {
+            desktop.open(filePath.toFile());
+            return ExitCode.SUCCESS.code();
+        } catch (IOException ioException) {
+            return ExitCode.UNKNOWN.code();
+        } catch (SecurityException securityException) {
+            return ExitCode.PERMISSION_DENIED.code();
+        }
+    }
+
+    public int openImageFromAbsolutePath(String request) {
+        Path filePath = Paths.get(request);
+        if (!Files.exists(filePath)) {
+            return ExitCode.FILE_NOT_FOUND.code();
+        }
+
+        if (!Desktop.isDesktopSupported()) {
+            return ExitCode.OS_NOT_SUPPORTED.code();
+        }
+
+        Desktop desktop = Desktop.getDesktop();
+
+        if (!desktop.isSupported(Desktop.Action.OPEN)) {
+            return ExitCode.OS_NOT_SUPPORTED.code();
+        }
+
+        try {
+            desktop.open(filePath.toFile());
+            return ExitCode.SUCCESS.code();
+        } catch (IOException ioException) {
+            return ExitCode.UNKNOWN.code();
+        } catch (SecurityException securityException) {
+            return ExitCode.PERMISSION_DENIED.code();
+        }
     }
 }
