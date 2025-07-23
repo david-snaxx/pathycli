@@ -1,13 +1,15 @@
 package dev.snaxx.pathycli.command;
 
 import dev.snaxx.pathycli.json.PersistenceReader;
+import dev.snaxx.pathycli.model.AliasMapping;
+import dev.snaxx.pathycli.model.DefaultMapping;
 import dev.snaxx.pathycli.util.ExitCode;
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ArgGroup;
 
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 @Command(name = "config",
@@ -69,6 +71,15 @@ public final class ConfigCommand implements Callable<Integer> {
     }
 
     private int getAliasInfo() {
+        PersistenceReader persistenceReader = new PersistenceReader();
+        for (String arg : args) {
+            Optional<AliasMapping> optional = persistenceReader.getAliasByKey(arg);
+            if (optional.isEmpty()) {
+                continue;
+            }
+            AliasMapping aliasMapping = optional.get();
+            printInfo(aliasMapping);
+        }
         return ExitCode.SUCCESS.code();
     }
 
@@ -90,5 +101,13 @@ public final class ConfigCommand implements Callable<Integer> {
 
     private int getAliasAndDefaultInfo() {
         return ExitCode.SUCCESS.code();
+    }
+
+    private void printInfo(AliasMapping aliasMapping) {
+
+    }
+
+    private void printInfo(DefaultMapping defaultMapping) {
+
     }
 }
