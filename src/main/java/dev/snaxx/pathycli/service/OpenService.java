@@ -1,7 +1,7 @@
 package dev.snaxx.pathycli.service;
 
-import dev.snaxx.pathycli.json.PersistenceReader;
 import dev.snaxx.pathycli.model.AliasMapping;
+import dev.snaxx.pathycli.util.ExitCode;
 import dev.snaxx.pathycli.util.PathyUtils;
 
 import java.awt.*;

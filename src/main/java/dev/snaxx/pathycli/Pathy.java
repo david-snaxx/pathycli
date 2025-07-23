@@ -2,7 +2,7 @@ package dev.snaxx.pathycli;
 
 import dev.snaxx.pathycli.command.AddCommand;
 import dev.snaxx.pathycli.command.OpenCommand;
-import dev.snaxx.pathycli.service.ExitCode;
+import dev.snaxx.pathycli.util.ExitCode;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 

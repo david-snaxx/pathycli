@@ -1,14 +1,12 @@
 package dev.snaxx.pathycli.json;
 
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.snaxx.pathycli.model.AliasMapping;
-import dev.snaxx.pathycli.service.ExitCode;
+import dev.snaxx.pathycli.util.ExitCode;
 import dev.snaxx.pathycli.util.ConfigPaths;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;

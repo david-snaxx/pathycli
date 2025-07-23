@@ -2,7 +2,7 @@ package dev.snaxx.pathycli.command;
 
 import dev.snaxx.pathycli.json.PersistenceReader;
 import dev.snaxx.pathycli.model.AliasMapping;
-import dev.snaxx.pathycli.service.ExitCode;
+import dev.snaxx.pathycli.util.ExitCode;
 import dev.snaxx.pathycli.service.OpenService;
 import dev.snaxx.pathycli.util.PathyUtils;
 import picocli.CommandLine.Command;
