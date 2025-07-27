@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.snaxx.pathycli.model.AliasMapping;
+import dev.snaxx.pathycli.model.DefaultMapping;
 import dev.snaxx.pathycli.util.ExitCode;
 import dev.snaxx.pathycli.util.ConfigPaths;
 
@@ -83,6 +84,31 @@ public class PersistenceReader {
     }
 
     /**
+     * Attempts to find a matching entry for the requested default app in defaults.json.
+     * @param defaultKey The requested alias entry.
+     * @return An optional containing a {@link DefaultMapping} object matching the request.
+     *         An empty optional in this instance signals that no matching alias exists.
+     */
+    public Optional<DefaultMapping> getDefaultByKey(String defaultKey) {
+        //todo this is pretty similar to getting aliases, a generic implementation might be better
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // parse the json file for the key
+        JsonNode rootNode;
+        try {
+            rootNode = objectMapper.readTree(ConfigPaths.DEFAULTS_JSON.toFile());
+        } catch (IOException ioException) {
+            return Optional.empty();
+        }
+        JsonNode defaultNode = rootNode.get(defaultKey);
+
+        if (defaultNode == null || defaultNode.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(objectMapper.convertValue(defaultNode, DefaultMapping.class));
+    }
+
+    /**
      * Attempts to add a new {@link AliasMapping} entry to the aliases.json file.
      * If a matching alias is already present, a new one is not added.
      * @param toAdd The new alias to add.
@@ -107,6 +133,26 @@ public class PersistenceReader {
         rootNode.set(toAdd.getAlias(), aliasNode);
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(ConfigPaths.ALIAS_JSON.toFile(), rootNode);
+        } catch (IOException ioException) {
+            return ExitCode.UNKNOWN.code();
+        }
+
+        return ExitCode.SUCCESS.code();
+    }
+
+    public int changeDefaultApp(DefaultMapping toSet) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode rootNode;
+        try {
+            rootNode = (ObjectNode) objectMapper.readTree(ConfigPaths.DEFAULTS_JSON.toFile());
+        } catch (IOException ioException) {
+            return ExitCode.UNKNOWN.code();
+        }
+
+        JsonNode defaultNode = objectMapper.valueToTree(toSet);
+        rootNode.set(toSet.getFileType(), defaultNode);
+        try {
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(ConfigPaths.DEFAULTS_JSON.toFile(), rootNode);
         } catch (IOException ioException) {
             return ExitCode.UNKNOWN.code();
         }

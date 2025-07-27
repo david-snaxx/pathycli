@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class DefaultMapping {
 
-    @JsonProperty("programPath") private String programPath;
     @JsonProperty("fileType") private String fileType;
+    @JsonProperty("programPath") private String programPath;
 
     /**
      * A Default Mapping object is used to map a user-specified alias/keyword to a program that should be used to open
@@ -20,17 +20,16 @@ public class DefaultMapping {
      */
     @JsonCreator
     public DefaultMapping(
-            @JsonProperty("programPath") String programPath,
-            @JsonProperty("fileType") String fileType
+            @JsonProperty("fileType") String fileType,
+            @JsonProperty("programPath") String programPath
     ) {
-        this.programPath = programPath;
         this.fileType = fileType;
+        this.programPath = programPath;
     }
-
-
-    public String getProgramPath() { return programPath; }
-    public void setProgramPath(String programPath) { this.programPath = programPath; }
 
     public String getFileType() { return fileType; }
     public void setFileType(String fileType) { this.fileType = fileType; }
+
+    public String getProgramPath() { return programPath; }
+    public void setProgramPath(String programPath) { this.programPath = programPath; }
 }

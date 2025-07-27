@@ -1,6 +1,8 @@
 package dev.snaxx.pathycli.command;
 
 
+import dev.snaxx.pathycli.json.PersistenceReader;
+import dev.snaxx.pathycli.model.DefaultMapping;
 import dev.snaxx.pathycli.util.ExitCode;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -33,6 +35,25 @@ public final class DefaultCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        return ExitCode.SUCCESS.code();
+        // inform if an overwrite happens
+        PersistenceReader persistenceReader = new PersistenceReader();
+        if (persistenceReader.getDefaultByKey(program).isPresent()) {
+            System.out.println("The default program already exists and will now be overwritten.");
+        }
+
+        // build the object to write to the json
+        String fileTypeExtension = "";
+        if (fileTypeOptions.image) {
+            fileTypeExtension = ".png";
+        } else if (fileTypeOptions.text) {
+            fileTypeExtension = ".txt";
+        }
+        if (fileTypeExtension.isEmpty()) {
+            return ExitCode.UNKNOWN.code();
+        }
+        DefaultMapping defaultMapping = new DefaultMapping(fileTypeExtension, this.program);
+
+        // write the default
+        return persistenceReader.changeDefaultApp(defaultMapping);
     }
 }
