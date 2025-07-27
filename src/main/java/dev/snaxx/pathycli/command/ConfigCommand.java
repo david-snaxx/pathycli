@@ -9,7 +9,6 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ArgGroup;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -106,19 +105,43 @@ public final class ConfigCommand implements Callable<Integer> {
         return ExitCode.SUCCESS.code();
     }
 
+    //todo implement
     private int getDefaultInfo() {
         return ExitCode.SUCCESS.code();
     }
 
+    //todo implement
     private int getAllDefaultInfo() {
         return ExitCode.SUCCESS.code();
     }
 
+    /**
+     * Logs all alias and default entries to the terminal.
+     * If there is an error while logging aliases, execution is halted before defaults are read.
+     * @return An {@link ExitCode} for operation success/failure.
+     */
     private int getAllInfo() {
-        return ExitCode.SUCCESS.code();
+        int exitCode = ExitCode.SUCCESS.code();
+        exitCode = getAllAliasInfo();
+        if (exitCode != ExitCode.SUCCESS.code()) {
+            return exitCode;
+        }
+        exitCode = getAllDefaultInfo();
+        return exitCode;
     }
 
+    /**
+     * Scans the aliases and defaults json files for the requested alias when the user has not specified which option.
+     * @return An {@link ExitCode} for operation success/failure.
+     */
     private int getAliasAndDefaultInfo() {
+        int aliasCode = getAliasInfo();
+        int defaultCode = getDefaultInfo();
+        if (aliasCode != ExitCode.SUCCESS.code()) {
+            return aliasCode;
+        } else if (defaultCode != ExitCode.SUCCESS.code()) {
+            return defaultCode;
+        }
         return ExitCode.SUCCESS.code();
     }
 
@@ -131,6 +154,7 @@ public final class ConfigCommand implements Callable<Integer> {
         System.out.println("Link: " + aliasMapping.getRelativePath());
     }
 
+    //todo implement
     private void printInfo(DefaultMapping defaultMapping) {
 
     }

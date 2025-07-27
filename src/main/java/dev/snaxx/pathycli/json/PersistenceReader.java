@@ -114,6 +114,11 @@ public class PersistenceReader {
         return ExitCode.SUCCESS.code();
     }
 
+    /**
+     * Retrieves all aliases currently stored in the aliases.json file.
+     * The string key of the map represents the alias chosen by the user.
+     * @return A Map of all current user specified aliases.
+     */
     public Map<String, AliasMapping> getAllAliases() {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, AliasMapping> aliases = null;

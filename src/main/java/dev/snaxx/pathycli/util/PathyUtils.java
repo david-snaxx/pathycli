@@ -51,6 +51,12 @@ public class PathyUtils {
         return System.getProperty("os.name").toLowerCase().startsWith("windows");
     }
 
+    /**
+     * Removes the Windows drive letter (i.e. "D:") from the given string.
+     * This method assumes the provided string is a valid absolute path on a Windows machine.
+     * @param absolutePath The file path to transform into a relative path.
+     * @return The provided absolute path minus its Windows drive letter.
+     */
     public static String removeWindowsDriveLetter(String absolutePath) {
         Path path = Paths.get(absolutePath);
 
@@ -58,11 +64,11 @@ public class PathyUtils {
             String pathStr = path.toString();
             // Match something like "C:\" at the beginning
             if (pathStr.matches("^[a-zA-Z]:\\\\.*")) {
-                return pathStr.substring(2); // Remove "C:"
+                return pathStr.substring(2);
             }
         }
-        // If not Windows or no drive letter, return as-is
-        return path.toString();
+
+        return path.toString(); // no drive letter
     }
 }
 
