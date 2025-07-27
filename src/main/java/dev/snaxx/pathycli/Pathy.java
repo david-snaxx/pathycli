@@ -1,8 +1,10 @@
 package dev.snaxx.pathycli;
 
 import dev.snaxx.pathycli.command.AddCommand;
+import dev.snaxx.pathycli.command.ConfigCommand;
+import dev.snaxx.pathycli.command.DefaultCommand;
 import dev.snaxx.pathycli.command.OpenCommand;
-import dev.snaxx.pathycli.service.ExitCode;
+import dev.snaxx.pathycli.util.ExitCode;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -17,6 +19,8 @@ public class Pathy implements Callable<Integer> {
         int exitCode = new CommandLine(new Pathy())
                 .addSubcommand(new OpenCommand())
                 .addSubcommand(new AddCommand())
+                .addSubcommand(new ConfigCommand())
+                .addSubcommand(new DefaultCommand())
                 .execute(args);
         System.out.println(exitCode);
         System.exit(exitCode);

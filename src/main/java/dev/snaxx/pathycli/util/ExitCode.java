@@ -1,4 +1,4 @@
-package dev.snaxx.pathycli.service;
+package dev.snaxx.pathycli.util;
 
 public enum ExitCode {
     SUCCESS(0, "Success."),
