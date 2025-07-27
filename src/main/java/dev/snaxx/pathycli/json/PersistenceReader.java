@@ -1,5 +1,9 @@
 package dev.snaxx.pathycli.json;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -10,7 +14,7 @@ import dev.snaxx.pathycli.util.ConfigPaths;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.Optional;
+import java.util.*;
 
 public class PersistenceReader {
 
@@ -108,5 +112,21 @@ public class PersistenceReader {
         }
 
         return ExitCode.SUCCESS.code();
+    }
+
+    public Map<String, AliasMapping> getAllAliases() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, AliasMapping> aliases = null;
+
+        try {
+            aliases = objectMapper.readValue(ConfigPaths.ALIAS_JSON.toFile(), new  TypeReference<Map<String, AliasMapping>>() {});
+        } catch (IOException ioException) {
+            System.err.println("IO error retrieving all aliases, check that aliases.json exists.");
+        }
+
+        if (aliases == null) {
+            return Collections.emptyMap();
+        }
+        return aliases;
     }
 }

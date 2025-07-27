@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class AliasMapping {
 
-    @JsonProperty("alias") private final String alias;
+    @JsonProperty("alias") private String alias;
     @JsonProperty("relativePath") private String relativePath;
     @JsonProperty("fileType") private String fileType;
 
@@ -31,6 +31,7 @@ public class AliasMapping {
 
 
     public String getAlias() { return alias; }
+    public void setAlias(String alias) { this.alias = alias; }
 
     public String getRelativePath() { return relativePath; }
     public void setRelativePath(String relativePath) { this.relativePath = relativePath; }

@@ -9,6 +9,8 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ArgGroup;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -70,11 +72,18 @@ public final class ConfigCommand implements Callable<Integer> {
         return ExitCode.SUCCESS.code();
     }
 
+    /**
+     * Searches through the aliases.json file for the requested aliases.
+     * Found entries print their details to the terminal.
+     * Missing entire alert item not found.
+     * @return An {@link ExitCode} for operation success/failure.
+     */
     private int getAliasInfo() {
         PersistenceReader persistenceReader = new PersistenceReader();
         for (String arg : args) {
             Optional<AliasMapping> optional = persistenceReader.getAliasByKey(arg);
             if (optional.isEmpty()) {
+                System.out.println("Alias not found: " + arg);
                 continue;
             }
             AliasMapping aliasMapping = optional.get();
@@ -83,7 +92,17 @@ public final class ConfigCommand implements Callable<Integer> {
         return ExitCode.SUCCESS.code();
     }
 
+    /**
+     * Retrieves all currently specified aliases from aliases.json and prints their details to the terminal.
+     * @return An {@link ExitCode} for operation success/failure.
+     */
     private int getAllAliasInfo() {
+        PersistenceReader persistenceReader = new PersistenceReader();
+        Map<String, AliasMapping> aliases = persistenceReader.getAllAliases();
+        for (String alias : aliases.keySet()) {
+            AliasMapping aliasMapping = aliases.get(alias);
+            printInfo(aliasMapping);
+        }
         return ExitCode.SUCCESS.code();
     }
 
@@ -103,8 +122,13 @@ public final class ConfigCommand implements Callable<Integer> {
         return ExitCode.SUCCESS.code();
     }
 
+    /**
+     * Prints the details of the provided alias to the terminal.
+     * @param aliasMapping The alias to log to the terminal.
+     */
     private void printInfo(AliasMapping aliasMapping) {
-
+        System.out.println("Alias: " + aliasMapping.getAlias());
+        System.out.println("Link: " + aliasMapping.getRelativePath());
     }
 
     private void printInfo(DefaultMapping defaultMapping) {
